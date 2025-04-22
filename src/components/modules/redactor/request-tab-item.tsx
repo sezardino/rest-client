@@ -25,8 +25,8 @@ export const RequestTabItem = (props: RequestTabProps) => {
     <article
       {...rest}
       className={cn(
-        "flex items-center min-w-max gap-1 p-2 bg-muted-foreground text-muted select-none cursor-pointer",
-        isActive && "bg-muted text-foreground",
+        "flex items-center min-w-max gap-1 p-2 bg-muted-foreground text-muted select-none cursor-pointer transition-colors duration-200",
+        isActive ? "bg-muted text-foreground" : "hover:bg-muted-foreground/50",
         className
       )}
       onClick={onTabClick}

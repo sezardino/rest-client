@@ -7,7 +7,8 @@ type TabsState = {
   tabs: RequestTab[];
   activeTabId: string | null;
 
-  openTab: (tabId?: string) => void;
+  openNewTab: () => void;
+  openTab: (tabId: string) => void;
   closeTab: (tabId: string) => void;
   setActiveTab: (tabId: string) => void;
 };
@@ -20,14 +21,17 @@ export const useTabsStore = create<TabsState>()(
       tabs: [],
       activeTabId: null,
 
-      openTab: (tabId) => {
-        const id = tabId ?? nanoid();
+      openTab: (tabId) =>
+        set(() => ({
+          activeTabId: tabId,
+        })),
+
+      openNewTab: () => {
+        const id = nanoid();
 
         set((store) => ({
           activeTabId: id,
-          tabs: tabId
-            ? undefined
-            : [...store.tabs, { id, title: NEW_TAB_NAME }],
+          tabs: [...store.tabs, { id, title: NEW_TAB_NAME }],
         }));
       },
 

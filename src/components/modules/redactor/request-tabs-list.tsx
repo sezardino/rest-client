@@ -1,44 +1,95 @@
+import { Button } from "@/components/ui/button";
 import { useTabsStore } from "@/store/tabs.store";
 import { cn } from "@/utils/cn";
-import { Plus } from "lucide-react";
-import type { ComponentProps } from "react";
+import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import { useEffect, useRef, type ComponentProps } from "react";
 import { RequestTabItem } from "./request-tab-item";
 
-export type RequestTabsListProps = ComponentProps<"ul"> & {};
+export type RequestTabsListProps = ComponentProps<"div"> & {};
+
+const SCROLL_STEP = 100;
 
 export const RequestTabsList = (props: RequestTabsListProps) => {
   const { className, ...rest } = props;
+  const listRef = useRef<HTMLUListElement>(null);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const tabsStore = useTabsStore();
 
+  const hasScroll =
+    (componentRef.current?.scrollWidth || 0) <
+    (listRef.current?.scrollWidth || 0);
+
+  useEffect(() => {
+    if (!listRef.current) return;
+
+    scrollList(listRef.current.scrollWidth, false);
+  }, [tabsStore.activeTabId]);
+
+  const scrollList = (left: number, isStep = true) => {
+    if (!listRef.current) return;
+
+    const currentScrollLeft = listRef.current.scrollLeft;
+
+    listRef.current.scrollTo({
+      left: isStep ? currentScrollLeft + left : left,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <ul
+    <div
       {...rest}
+      ref={componentRef}
       className={cn(
-        "flex items-center p-px gap-px overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-foreground",
+        "flex items-center justify-between gap-1 p-px bg-muted-foreground/50 w-full",
         className
       )}
     >
-      {tabsStore.tabs.map((tab) => (
-        <li key={tab.id}>
-          <RequestTabItem
-            tab={tab}
-            isActive={tabsStore.activeTabId === tab.id}
-            onCloseTabClick={() => tabsStore.closeTab(tab.id)}
-            onTabClick={() => tabsStore.setActiveTab(tab.id)}
-          />
-        </li>
-      ))}
-      <li>
-        <button
-          type="button"
-          className="p-2 bg-muted-foreground text-muted select-none cursor-pointer"
-          onClick={() => tabsStore.openTab()}
-          aria-label="New tab"
+      {hasScroll && (
+        <Button
+          size={"icon"}
+          variant={"ghost"}
+          className="text-muted"
+          onClick={() => scrollList(-SCROLL_STEP)}
         >
-          <Plus />
-        </button>
-      </li>
-    </ul>
+          <ArrowLeft />
+        </Button>
+      )}
+      <ul
+        ref={listRef}
+        className="flex items-center gap-px overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {tabsStore.tabs.map((tab) => (
+          <li key={tab.id}>
+            <RequestTabItem
+              tab={tab}
+              isActive={tabsStore.activeTabId === tab.id}
+              onCloseTabClick={() => tabsStore.closeTab(tab.id)}
+              onTabClick={() => tabsStore.setActiveTab(tab.id)}
+            />
+          </li>
+        ))}
+      </ul>
+      {hasScroll && (
+        <Button
+          size={"icon"}
+          variant={"ghost"}
+          className="text-muted"
+          onClick={() => scrollList(SCROLL_STEP)}
+        >
+          <ArrowRight />
+        </Button>
+      )}
+      <Button
+        size={"icon"}
+        variant={"ghost"}
+        className="text-muted"
+        onClick={() => tabsStore.openNewTab()}
+        aria-label="New tab"
+      >
+        <Plus />
+      </Button>
+    </div>
   );
 };
