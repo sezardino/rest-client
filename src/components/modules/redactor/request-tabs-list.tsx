@@ -52,6 +52,7 @@ export const RequestTabsList = (props: RequestTabsListProps) => {
           variant={"ghost"}
           className="text-muted"
           onClick={() => scrollList(-SCROLL_STEP)}
+          aria-label="Scroll left"
         >
           <ArrowLeft />
         </Button>
@@ -77,6 +78,7 @@ export const RequestTabsList = (props: RequestTabsListProps) => {
           variant={"ghost"}
           className="text-muted"
           onClick={() => scrollList(SCROLL_STEP)}
+          aria-label="Scroll right"
         >
           <ArrowRight />
         </Button>
