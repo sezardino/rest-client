@@ -1,3 +1,4 @@
+import { RequestConfig } from "@/components/modules/redactor/request-config";
 import { RequestTabsList } from "@/components/modules/redactor/request-tabs-list";
 import {
   ResizableHandle,
@@ -22,7 +23,7 @@ const Home = () => {
           <RequestTabsList />
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={50} minSize={10}>
-              request
+              <RequestConfig />
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={50} minSize={10}>

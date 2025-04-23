@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useTabsStore } from "@/store/tabs.store";
+import { useRequestTabsStore } from "@/store/request-tabs/request-tabs.store";
 import { cn } from "@/utils/cn";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useEffect, useRef, type ComponentProps } from "react";
@@ -14,7 +14,7 @@ export const RequestTabsList = (props: RequestTabsListProps) => {
   const listRef = useRef<HTMLUListElement>(null);
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const tabsStore = useTabsStore();
+  const tabsStore = useRequestTabsStore();
 
   const hasScroll =
     (componentRef.current?.scrollWidth || 0) <
@@ -66,7 +66,7 @@ export const RequestTabsList = (props: RequestTabsListProps) => {
             <RequestTabItem
               tab={tab}
               isActive={tabsStore.activeTabId === tab.id}
-              onCloseTabClick={() => tabsStore.closeTab(tab.id)}
+              onCloseTabClick={() => tabsStore.delete(tab.id)}
               onTabClick={() => tabsStore.setActiveTab(tab.id)}
             />
           </li>
@@ -87,7 +87,7 @@ export const RequestTabsList = (props: RequestTabsListProps) => {
         size={"icon"}
         variant={"ghost"}
         className="text-muted"
-        onClick={() => tabsStore.openNewTab()}
+        onClick={() => tabsStore.create()}
         aria-label="New tab"
       >
         <Plus />

@@ -1,41 +1,43 @@
-import type { RequestTab } from "@/entity";
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { NEW_REQUEST_TAB_NAME } from "./request-tabs.const";
+import type { RequestTabsStoreState } from "./request-tabs.types";
 
-type TabsState = {
-  tabs: RequestTab[];
-  activeTabId: string | null;
-
-  openNewTab: () => void;
-  openTab: (tabId: string) => void;
-  closeTab: (tabId: string) => void;
-  setActiveTab: (tabId: string) => void;
-};
-
-const NEW_TAB_NAME = "New Tab";
-
-export const useTabsStore = create<TabsState>()(
+export const useRequestTabsStore = create<RequestTabsStoreState>()(
   persist(
     (set, get) => ({
       tabs: [],
       activeTabId: null,
 
-      openTab: (tabId) =>
-        set(() => ({
-          activeTabId: tabId,
-        })),
-
-      openNewTab: () => {
+      create: (requestId) => {
         const id = nanoid();
 
         set((store) => ({
           activeTabId: id,
-          tabs: [...store.tabs, { id, title: NEW_TAB_NAME }],
+          tabs: [...store.tabs, { id, requestId, title: NEW_REQUEST_TAB_NAME }],
         }));
+
+        return id;
       },
 
-      closeTab: (tabId) => {
+      update: (tabId, payload) => {
+        const { tabs } = get();
+
+        const neededTab = tabs.find((tab) => tab.id === tabId);
+
+        if (!neededTab) return;
+
+        const newTabs = tabs.map((tab) => {
+          if (tab.id === tabId) return { ...tab, ...payload };
+
+          return tab;
+        });
+
+        set({ tabs: newTabs });
+      },
+
+      delete: (tabId) => {
         const { activeTabId, tabs } = get();
 
         const tabIndex = tabs.findIndex((tab) => tab.id === tabId);
@@ -62,6 +64,8 @@ export const useTabsStore = create<TabsState>()(
 
         set({ activeTabId: tabId });
       },
+
+      closeAllTabsForRequest: (requestId) => {},
     }),
     {
       name: "tabs-storage",
