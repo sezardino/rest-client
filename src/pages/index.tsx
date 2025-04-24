@@ -1,3 +1,4 @@
+import { CollectionsSidebar } from "@/components/modules/redactor/collections-sidebar";
 import { RequestConfig } from "@/components/modules/redactor/request-config";
 import { RequestTabsList } from "@/components/modules/redactor/request-tabs-list";
 import {
@@ -16,7 +17,7 @@ const Home = () => {
     <main className="max-h-dvh h-dvh overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="h-full">
         <ResizablePanel defaultSize={30} minSize={10} maxSize={30}>
-          sidebar
+          <CollectionsSidebar />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={70} minSize={70}>
