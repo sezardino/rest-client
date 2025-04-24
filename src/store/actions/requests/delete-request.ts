@@ -7,5 +7,5 @@ export const deleteRequest = (requestId: string) => {
 
   useCollectionsStore.getState().removeRequestNode(requestId);
 
-  useRequestsStore.getState().deleteRequest(requestId);
+  useRequestsStore.getState().delete(requestId);
 };
