@@ -1,31 +1,33 @@
-"use client";
-
-import { useRequest } from "@/components/providers/request";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/utils/cn";
 import { Plus, Trash } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
-export type RequestParamsProps = ComponentProps<"section"> & {};
+import { cn } from "@/utils/cn";
+
+import type { RequestData } from "@/components/providers/request/request.types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+
+export type RequestParamsProps = ComponentProps<"section"> & {
+  request: RequestData;
+  onRequestChange: (request: RequestData) => void;
+};
 
 export const RequestParams = (props: RequestParamsProps) => {
-  const { className, ...rest } = props;
+  const { request, onRequestChange, className, ...rest } = props;
 
-  const { request, setRequest } = useRequest();
   const [params, setParams] = useState(request.params);
 
   const addParam = () => {
     const newParams = [...params, { key: "", value: "", enabled: true }];
     setParams(newParams);
-    setRequest({ ...request, params: newParams });
+    onRequestChange({ ...request, params: newParams });
   };
 
   const removeParam = (index: number) => {
     const newParams = params.filter((_, i) => i !== index);
     setParams(newParams);
-    setRequest({ ...request, params: newParams });
+    onRequestChange({ ...request, params: newParams });
   };
 
   const updateParam = (
@@ -36,7 +38,7 @@ export const RequestParams = (props: RequestParamsProps) => {
     const newParams = [...params];
     newParams[index] = { ...newParams[index], [field]: value };
     setParams(newParams);
-    setRequest({ ...request, params: newParams });
+    onRequestChange({ ...request, params: newParams });
   };
 
   return (

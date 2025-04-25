@@ -15,7 +15,7 @@ export const RestClientInterface = () => {
         /> */}
         <div className="flex flex-1 overflow-hidden">
           <Sidebar collapsed={sidebarCollapsed} />
-          <div className="grid grid-cols-2 overflow-hidden">
+          <div className="grid grid-cols-2 w-full overflow-hidden">
             <RequestPanel />
             <ResponsePanel />
           </div>

@@ -1,15 +1,17 @@
-import { useRequest } from "@/components/providers/request";
+import type { RequestData } from "@/components/providers/request/request.types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/utils/cn";
 import { useState, type ComponentProps } from "react";
 
-export type RequestBodyProps = ComponentProps<"section"> & {};
+export type RequestBodyProps = ComponentProps<"section"> & {
+  request: RequestData;
+  onRequestChange: (request: RequestData) => void;
+};
 
 export const RequestBody = (props: RequestBodyProps) => {
-  const { className, ...rest } = props;
+  const { request, onRequestChange, className, ...rest } = props;
 
-  const { request, setRequest } = useRequest();
   const [contentType, setContentType] = useState<
     "json" | "form-data" | "x-www-form-urlencoded" | "raw"
   >(request.body.contentType);
@@ -22,7 +24,7 @@ export const RequestBody = (props: RequestBodyProps) => {
       | "x-www-form-urlencoded"
       | "raw";
     setContentType(newContentType);
-    setRequest({
+    onRequestChange({
       ...request,
       body: {
         ...request.body,
@@ -33,7 +35,7 @@ export const RequestBody = (props: RequestBodyProps) => {
 
   const handleContentChange = (value: string) => {
     setContent(value);
-    setRequest({
+    onRequestChange({
       ...request,
       body: {
         ...request.body,

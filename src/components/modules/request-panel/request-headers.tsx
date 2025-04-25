@@ -1,4 +1,4 @@
-import { useRequest } from "@/components/providers/request";
+import type { RequestData } from "@/components/providers/request/request.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -6,24 +6,26 @@ import { cn } from "@/utils/cn";
 import { Plus, Trash } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
-export type RequestHeadersProps = ComponentProps<"section"> & {};
+export type RequestHeadersProps = ComponentProps<"section"> & {
+  request: RequestData;
+  onRequestChange: (request: RequestData) => void;
+};
 
 export const RequestHeaders = (props: RequestHeadersProps) => {
-  const { className, ...rest } = props;
+  const { request, onRequestChange, className, ...rest } = props;
 
-  const { request, setRequest } = useRequest();
   const [headers, setHeaders] = useState(request.headers);
 
   const addHeader = () => {
     const newHeaders = [...headers, { key: "", value: "", enabled: true }];
     setHeaders(newHeaders);
-    setRequest({ ...request, headers: newHeaders });
+    onRequestChange({ ...request, headers: newHeaders });
   };
 
   const removeHeader = (index: number) => {
     const newHeaders = headers.filter((_, i) => i !== index);
     setHeaders(newHeaders);
-    setRequest({ ...request, headers: newHeaders });
+    onRequestChange({ ...request, headers: newHeaders });
   };
 
   const updateHeader = (
@@ -34,7 +36,7 @@ export const RequestHeaders = (props: RequestHeadersProps) => {
     const newHeaders = [...headers];
     newHeaders[index] = { ...newHeaders[index], [field]: value };
     setHeaders(newHeaders);
-    setRequest({ ...request, headers: newHeaders });
+    onRequestChange({ ...request, headers: newHeaders });
   };
 
   // Common headers for autocomplete

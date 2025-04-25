@@ -2,8 +2,11 @@ import type { HTTPMethod } from "@/const/http-methods";
 import { cn } from "@/utils/cn";
 import type { ComponentProps } from "react";
 
+type RequestMethodSizes = "xs" | "sm";
+
 export type RequestMethodProps = ComponentProps<"span"> & {
   method: HTTPMethod;
+  size?: RequestMethodSizes;
 };
 
 const methodColorsMap: Record<HTTPMethod, string> = {
@@ -14,15 +17,21 @@ const methodColorsMap: Record<HTTPMethod, string> = {
   PATCH: "text-purple-500",
 };
 
+const methodSizesMap: Record<RequestMethodSizes, string> = {
+  xs: "text-xs",
+  sm: "text-sm",
+};
+
 export const RequestMethod = (props: RequestMethodProps) => {
-  const { method, className, ...rest } = props;
+  const { size = "xs", method, className, ...rest } = props;
 
   return (
     <span
       {...rest}
       className={cn(
-        "text-xs font-semibold mr-2 w-12",
-        methodColorsMap[method] || "text-gray-500",
+        "font-semibold mr-2 w-12",
+        methodSizesMap[size],
+        methodColorsMap[method],
         className
       )}
     >

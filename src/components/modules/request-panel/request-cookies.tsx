@@ -1,4 +1,4 @@
-import { useRequest } from "@/components/providers/request";
+import type { RequestData } from "@/components/providers/request/request.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -6,24 +6,26 @@ import { cn } from "@/utils/cn";
 import { Plus, Trash } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
-export type RequestCookiesProps = ComponentProps<"section"> & {};
+export type RequestCookiesProps = ComponentProps<"section"> & {
+  request: RequestData;
+  onRequestChange: (request: RequestData) => void;
+};
 
 export const RequestCookies = (props: RequestCookiesProps) => {
-  const { className, ...rest } = props;
+  const { request, onRequestChange, className, ...rest } = props;
 
-  const { request, setRequest } = useRequest();
   const [cookies, setCookies] = useState(request.cookies);
 
   const addCookie = () => {
     const newCookies = [...cookies, { key: "", value: "", enabled: true }];
     setCookies(newCookies);
-    setRequest({ ...request, cookies: newCookies });
+    onRequestChange({ ...request, cookies: newCookies });
   };
 
   const removeCookie = (index: number) => {
     const newCookies = cookies.filter((_, i) => i !== index);
     setCookies(newCookies);
-    setRequest({ ...request, cookies: newCookies });
+    onRequestChange({ ...request, cookies: newCookies });
   };
 
   const updateCookie = (
@@ -34,7 +36,7 @@ export const RequestCookies = (props: RequestCookiesProps) => {
     const newCookies = [...cookies];
     newCookies[index] = { ...newCookies[index], [field]: value };
     setCookies(newCookies);
-    setRequest({ ...request, cookies: newCookies });
+    onRequestChange({ ...request, cookies: newCookies });
   };
 
   return (

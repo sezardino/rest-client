@@ -1,18 +1,20 @@
+import { Send } from "lucide-react";
+import { type ComponentProps } from "react";
+
 import { useRequest } from "@/components/providers/request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import type { HTTPMethod } from "@/const/http-methods";
 import { cn } from "@/utils/cn";
-import { Send } from "lucide-react";
-import { useState, type ComponentProps } from "react";
-import { MethodsSelect } from "../redactor/methods-select";
-import { RequestAuth } from "./request-auth";
-import { RequestBody } from "./request-body";
+
+import { RequestAuth } from "../request-auth";
+import { RequestBody } from "../request-body/request-body";
+import { MethodsSelect } from "../shared/methods-select";
+import { PanelTabs } from "../shared/panel-tabs";
 import { RequestCookies } from "./request-cookies";
 import { RequestHeaders } from "./request-headers";
 import { RequestParams } from "./request-params";
-
-export type RequestPanelProps = ComponentProps<"div"> & {};
 
 const tabs = [
   { value: "params", label: "Params", component: RequestParams },
@@ -22,17 +24,18 @@ const tabs = [
   { value: "cookies", label: "Cookies", component: RequestCookies },
 ];
 
+export type RequestPanelProps = ComponentProps<"div"> & {};
+
 export const RequestPanel = (props: RequestPanelProps) => {
   const { className, ...rest } = props;
 
   const { request, setRequest, sendRequest, isLoading } = useRequest();
-  const [activeTab, setActiveTab] = useState("params");
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRequest({ ...request, url: e.target.value });
   };
 
-  const handleMethodChange = (method: string) => {
+  const handleMethodChange = (method: HTTPMethod) => {
     setRequest({ ...request, method: method as any });
   };
 
@@ -45,7 +48,10 @@ export const RequestPanel = (props: RequestPanelProps) => {
       )}
     >
       <header className="px-4 flex items-center gap-2">
-        <MethodsSelect onChange={console.log} />
+        <MethodsSelect
+          onMethodChange={handleMethodChange}
+          className="min-w-[100px]"
+        />
         <Input
           value={request.url}
           onChange={handleUrlChange}
@@ -62,31 +68,10 @@ export const RequestPanel = (props: RequestPanelProps) => {
         </Button>
       </header>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="px-4 h-full flex flex-col"
-      >
-        <TabsList className="grid grid-cols-5 w-full max-w-md">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <div className="mt-2 flex-1 overflow-auto">
-          {tabs.map((tab) => (
-            <TabsContent
-              key={tab.value}
-              asChild
-              value={tab.value}
-              className="h-full border rounded-md"
-            >
-              <tab.component />
-            </TabsContent>
-          ))}
-        </div>
-      </Tabs>
+      <PanelTabs
+        tabs={tabs}
+        commonProps={{ request, onRequestChange: setRequest }}
+      />
     </div>
   );
 };

@@ -1,22 +1,24 @@
-import { useRequest } from "@/components/providers/request";
+import type { RequestData } from "@/components/providers/request/request.types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/utils/cn";
 import { useState, type ComponentProps } from "react";
 
-export type RequestAuthProps = ComponentProps<"section"> & {};
+export type RequestAuthProps = ComponentProps<"section"> & {
+  request: RequestData;
+  onRequestChange: (request: RequestData) => void;
+};
 
 export const RequestAuth = (props: RequestAuthProps) => {
-  const { className, ...rest } = props;
+  const { request, onRequestChange, className, ...rest } = props;
 
-  const { request, setRequest } = useRequest();
   const [authType, setAuthType] = useState(request.auth.type);
 
   const handleAuthTypeChange = (value: string) => {
     const newAuthType = value as "none" | "basic" | "bearer" | "oauth2";
     setAuthType(newAuthType);
-    setRequest({
+    onRequestChange({
       ...request,
       auth: {
         type: newAuthType,
@@ -26,7 +28,7 @@ export const RequestAuth = (props: RequestAuthProps) => {
   };
 
   const handleAuthDataChange = (key: string, value: string) => {
-    setRequest({
+    onRequestChange({
       ...request,
       auth: {
         ...request.auth,

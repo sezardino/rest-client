@@ -3,7 +3,7 @@ import { Dropdown } from "@/components/ui/dropdown";
 import { cn } from "@/utils/cn";
 import { Copy, Globe, MoreVertical, Trash } from "lucide-react";
 import type { ComponentProps } from "react";
-import { RequestMethod } from "./request-method";
+import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
 export type SidebarRequestItemProps = ComponentProps<"div"> &
