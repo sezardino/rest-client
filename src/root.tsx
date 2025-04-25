@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { TooltipProvider } from "./components/ui/tooltip";
+import { TanstackQueryProvider } from "./libs/tanstack-query";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,7 +35,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+        <TanstackQueryProvider>
+          <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+        </TanstackQueryProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
