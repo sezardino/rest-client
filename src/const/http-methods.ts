@@ -6,4 +6,6 @@ export const HTTP_METHODS = Object.freeze({
   PATCH: "PATCH",
 });
 
+export const HTTP_METHODS_LIST = Object.values(HTTP_METHODS);
+
 export type HTTPMethod = keyof typeof HTTP_METHODS;
