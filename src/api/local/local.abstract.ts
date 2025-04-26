@@ -88,7 +88,7 @@ export class AbstractLocalApiService<T extends BasicItem> {
     return item;
   }
 
-  async add(dto: Omit<T, "id">): Promise<void> {
+  async create(dto: Omit<T, "id">): Promise<T> {
     const newItem = { ...dto, id: crypto.randomUUID() } as T;
     const validation = this.entitySchema.safeParse(newItem);
 
@@ -98,6 +98,7 @@ export class AbstractLocalApiService<T extends BasicItem> {
 
     const data = await this.getData();
     await this.setData([...data, newItem]);
+    return newItem;
   }
 
   async update(id: string, dto: Partial<Omit<T, "id">>): Promise<void> {
@@ -129,5 +130,14 @@ export class AbstractLocalApiService<T extends BasicItem> {
 
     data.splice(index, 1);
     await this.setData(data);
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    await Promise.all(ids.map((id) => this.delete(id)));
+  }
+
+  async save() {
+    const items = await this.getAll();
+    await this.setData(items);
   }
 }

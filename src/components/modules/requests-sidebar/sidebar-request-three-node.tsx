@@ -6,16 +6,26 @@ import type { ComponentProps } from "react";
 import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
-export type SidebarRequestThreeNodeProps = ComponentProps<"div"> &
-  Pick<RequestItem, "method" | "name"> & {};
+export type SidebarRequestThreeNodeProps = ComponentProps<"li"> &
+  Pick<RequestItem, "method" | "name"> & {
+    onDeleteNodeClick: () => void;
+    onDuplicateNodeClick: () => void;
+  };
 
 export const SidebarRequestThreeNode = (
   props: SidebarRequestThreeNodeProps
 ) => {
-  const { method, name, className, ...rest } = props;
+  const {
+    method,
+    name,
+    onDeleteNodeClick,
+    onDuplicateNodeClick,
+    className,
+    ...rest
+  } = props;
 
   return (
-    <div
+    <li
       {...rest}
       className={cn(
         "flex items-center px-3 py-1 hover:bg-muted/50 cursor-pointer group",
@@ -32,14 +42,14 @@ export const SidebarRequestThreeNode = (
             label: "Duplicate",
             id: "duplicate",
             icon: Copy,
-            onClick: () => console.log("Duplicate"),
+            onClick: onDuplicateNodeClick,
           },
           {
             label: "Delete",
             id: "delete",
             icon: Trash,
             color: "red",
-            onClick: () => console.log("Delete"),
+            onClick: onDeleteNodeClick,
           },
         ]}
       >
@@ -51,6 +61,6 @@ export const SidebarRequestThreeNode = (
           <MoreVertical className="h-3.5 w-3.5" />
         </Button>
       </Dropdown>
-    </div>
+    </li>
   );
 };

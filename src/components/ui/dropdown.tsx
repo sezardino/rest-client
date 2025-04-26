@@ -40,7 +40,10 @@ export const Dropdown = (props: DropdownProps) => {
           <DropdownMenuItem
             key={option.id}
             className={dropdownTextColorsMap[option.color || "default"]}
-            onClick={option.onClick}
+            onClick={(evt) => {
+              evt.stopPropagation();
+              option.onClick();
+            }}
           >
             {option.icon && <option.icon className="mr-2 h-4 w-4" />}
             <span>{option.label}</span>
