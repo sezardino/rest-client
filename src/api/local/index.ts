@@ -1,21 +1,15 @@
-import type { RemoteCall, ThreeNode } from "../api.entity";
-import { RemoteCallSchema, ThreeNodeSchema } from "../api.schema";
-import { AbstractLocalApiService } from "./local.abstract";
-import { LS_API_NAMES } from "./local.const";
+import { RemoteCallsService } from "./remote-calls.service";
+import { ThreeNodesService } from "./three-nodes.service";
 
-export class LocalApiService {
-  threeNodes: AbstractLocalApiService<ThreeNode>;
-  remoteCalls: AbstractLocalApiService<RemoteCall>;
+class LocalApiService {
+  threeNodes: ThreeNodesService;
+  remoteCalls: RemoteCallsService;
 
   constructor() {
-    this.threeNodes = new AbstractLocalApiService({
-      name: LS_API_NAMES.threeNode,
-      schema: ThreeNodeSchema,
-    });
+    this.remoteCalls = new RemoteCallsService();
 
-    this.remoteCalls = new AbstractLocalApiService({
-      name: LS_API_NAMES.remoteCalls,
-      schema: RemoteCallSchema,
-    });
+    this.threeNodes = new ThreeNodesService(this.remoteCalls);
   }
 }
+
+export const localApi = new LocalApiService();

@@ -1,13 +1,11 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
+import { useThreeNodeListQuery } from "@/hooks/tanstack/query/three-node/three-node.list";
 import { cn } from "@/utils/cn";
 import { FileDown, FileUp, Folder, MoreVertical, Plus } from "lucide-react";
 import { useState } from "react";
-import { MOCKS_REQUEST_SIDEBAR_COLLECTIONS } from "./requests-sidebar.mocks";
-import { SidebarRequestsCollection } from "./sidebar-requests-collection";
+import { SidebarTreeNode } from "./sidebar-three-node";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -15,6 +13,9 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed }: SidebarProps) {
   const [filter, setFilter] = useState("");
+
+  const { data: threeNodes, isLoading: isThreeNodesLoading } =
+    useThreeNodeListQuery();
 
   return (
     <aside
@@ -75,10 +76,10 @@ export function Sidebar({ collapsed }: SidebarProps) {
         />
       </header>
 
-      <SidebarRequestsCollection
+      <SidebarTreeNode
         name="API Collection"
         isExpanded={true}
-        items={MOCKS_REQUEST_SIDEBAR_COLLECTIONS}
+        items={threeNodes!}
         className="flex-1 overflow-auto"
       />
 

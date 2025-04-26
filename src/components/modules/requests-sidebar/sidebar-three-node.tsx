@@ -1,5 +1,4 @@
-"use client";
-
+import type { ThreeNodeWithRelations } from "@/api/api.schema";
 import { Button } from "@/components/ui/button";
 import { Collapsible } from "@/components/ui/collapsible";
 import { Dropdown } from "@/components/ui/dropdown";
@@ -19,18 +18,15 @@ import {
   Trash,
 } from "lucide-react";
 import { Fragment, useState, type ComponentProps } from "react";
-import type { SidebarItem } from "./requests-sidebar.types";
-import { SidebarRequestItem } from "./sidebar-request-item";
+import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
 
-export type SidebarRequestsCollectionProps = ComponentProps<"div"> & {
+export type SidebarTreeNodeProps = ComponentProps<"div"> & {
   name: string;
   isExpanded?: boolean;
-  items: SidebarItem[];
+  items: ThreeNodeWithRelations[];
 };
 
-export const SidebarRequestsCollection = (
-  props: SidebarRequestsCollectionProps
-) => {
+export const SidebarTreeNode = (props: SidebarTreeNodeProps) => {
   const {
     name,
     isExpanded: isDefaultExpanded = false,
@@ -96,10 +92,13 @@ export const SidebarRequestsCollection = (
       <CollapsibleContent className="ml-4 border-l border-border">
         {items.map((item, index) => (
           <Fragment key={index}>
-            {item.type === "folder" ? (
-              <SidebarRequestsCollection items={item.items} name={item.name} />
+            {item.type === "node" && item.childNodes ? (
+              <SidebarTreeNode items={item.childNodes} name={item.name} />
             ) : (
-              <SidebarRequestItem method={item.method} name={item.name} />
+              <SidebarRequestThreeNode
+                method={item.remoteCall?.method!}
+                name={item.name}
+              />
             )}
           </Fragment>
         ))}

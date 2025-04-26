@@ -9,25 +9,28 @@ type BasicItem = {
 type LocalApiServiceProps<T extends BasicItem> = {
   name: LSApiName;
   schema: ZodType<T>;
+  defaultValue?: T[];
 };
 
 export class AbstractLocalApiService<T extends BasicItem> {
-  name: LSApiName;
-  entitySchema: ZodType<T>;
-  tableSchema: ZodType<T[]>;
+  private name: LSApiName;
+  private entitySchema: ZodType<T>;
+  private tableSchema: ZodType<T[]>;
+  private defaultValue?: T[];
 
   constructor(props: LocalApiServiceProps<T>) {
-    const { name, schema } = props;
+    const { name, schema, defaultValue } = props;
 
     this.name = name;
     this.entitySchema = schema;
     this.tableSchema = z.array(schema);
+    this.defaultValue = defaultValue;
   }
 
   private async getData(): Promise<T[]> {
     try {
       const items = localStorage.getItem(this.name);
-      if (!items) return [];
+      if (!items) return this.defaultValue ?? [];
 
       let parsedData;
       try {

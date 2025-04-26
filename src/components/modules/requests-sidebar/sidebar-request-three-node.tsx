@@ -6,10 +6,12 @@ import type { ComponentProps } from "react";
 import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
-export type SidebarRequestItemProps = ComponentProps<"div"> &
+export type SidebarRequestThreeNodeProps = ComponentProps<"div"> &
   Pick<RequestItem, "method" | "name"> & {};
 
-export const SidebarRequestItem = (props: SidebarRequestItemProps) => {
+export const SidebarRequestThreeNode = (
+  props: SidebarRequestThreeNodeProps
+) => {
   const { method, name, className, ...rest } = props;
 
   return (
