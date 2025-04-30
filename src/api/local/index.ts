@@ -1,5 +1,7 @@
-import { RemoteCallsService } from "./remote-calls.service";
-import { ThreeNodesService } from "./three-nodes.service";
+import { RemoteCallsService } from "./remote-calls";
+import { ThreeNodesService } from "./three-node";
+
+export * from "./three-node/three-nodes.types";
 
 class LocalApiService {
   threeNodes: ThreeNodesService;

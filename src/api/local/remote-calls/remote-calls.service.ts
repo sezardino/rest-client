@@ -1,8 +1,8 @@
-import type { RemoteCall } from "../api.entity";
-import { RemoteCallSchema } from "../api.schema";
-import { AbstractLocalApiService } from "./local.abstract";
-import { LS_API_NAMES } from "./local.const";
-import { MOCK_LOCAL_REMOTE_CALLS } from "./mocks";
+import type { RemoteCall } from "../../api.entity";
+import { RemoteCallSchema } from "../../api.schema";
+import { AbstractLocalApiService } from "../local.abstract";
+import { LS_API_NAMES } from "../local.const";
+import { MOCK_LOCAL_REMOTE_CALLS } from "../mocks";
 
 export class RemoteCallsService extends AbstractLocalApiService<RemoteCall> {
   constructor() {

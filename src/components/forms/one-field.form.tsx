@@ -11,12 +11,19 @@ import {
 } from "../ui/form-field";
 import { Input } from "../ui/input";
 
-export type OneFieldFormProps = ComponentProps<"form"> & {
+export type OneFieldFormValues = {
+  value: string;
+};
+
+type OmittedComponentProps = Omit<ComponentProps<"form">, "onSubmit">;
+
+export type OneFieldFormProps = OmittedComponentProps & {
   label: string;
   description?: string;
   placeholder?: string;
   initialValue?: string;
-  schema: ZodType<{ value: string }>;
+  schema: ZodType<OneFieldFormValues>;
+  onSubmit: (value: string) => void;
 };
 
 export const OneFieldForm = (props: OneFieldFormProps) => {
@@ -25,6 +32,7 @@ export const OneFieldForm = (props: OneFieldFormProps) => {
     placeholder,
     description,
     initialValue,
+    onSubmit,
     schema,
     className,
     ...rest
@@ -35,11 +43,12 @@ export const OneFieldForm = (props: OneFieldFormProps) => {
   const action = (formData: FormData) => {
     const values = Object.fromEntries(formData);
     const validationResponse = schema.safeParse(values);
-    console.log(values);
 
     if (validationResponse.success) {
       clearError();
-      return console.log("success");
+
+      onSubmit(validationResponse.data.value);
+      return;
     }
 
     const errors = validationResponse.error.format();
@@ -55,6 +64,7 @@ export const OneFieldForm = (props: OneFieldFormProps) => {
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
+              autoFocus
               name="value"
               placeholder={placeholder || ""}
               defaultValue={initialValue || ""}

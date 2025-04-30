@@ -15,7 +15,7 @@ export type ThreeNodeType =
 export const RemoteCallSchema = z.object({
   id: z.string().uuid(),
   method: z.nativeEnum(HTTP_METHODS),
-  url: z.string().url(),
+  url: z.string(),
   threeNodeId: z.string().uuid().nullable(),
 });
 

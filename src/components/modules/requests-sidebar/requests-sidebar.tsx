@@ -2,12 +2,15 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
-import { useCreateThreeNodeMutation } from "@/hooks/tanstack/three-nodes/create-three-node.mutation";
 import { useDeleteThreeNodeMutation } from "@/hooks/tanstack/three-nodes/delete-three-node.mutation";
 import { useThreeNodeListQuery } from "@/hooks/tanstack/three-nodes/three-node-list.query";
 import { cn } from "@/utils/cn";
 import { FileDown, FileUp, Folder, MoreVertical, Plus } from "lucide-react";
 import { useState } from "react";
+import {
+  CreateThreeNodeDialog,
+  type CreateThreeNodeDialogProps,
+} from "./create-three-node-dialog";
 import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
 import { SidebarTreeNode } from "./sidebar-three-node";
 
@@ -19,10 +22,12 @@ export function Sidebar({ collapsed }: SidebarProps) {
   const [filter, setFilter] = useState("");
 
   const [nodeToDelete, setNodeToDelete] = useState<string | null>(null);
+  const [createType, setCreateType] = useState<
+    CreateThreeNodeDialogProps["type"] | null
+  >(null);
 
   const { data: threeNodes, isLoading: isThreeNodesLoading } =
     useThreeNodeListQuery();
-  const { mutate: createThreeNode } = useCreateThreeNodeMutation();
   const { mutateAsync: deleteThreeNode, isPending: isDeleteNodeLoading } =
     useDeleteThreeNodeMutation();
 
@@ -45,25 +50,30 @@ export function Sidebar({ collapsed }: SidebarProps) {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase">Requests</h2>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <Plus className="h-4 w-4" />
-                <span className="sr-only">Create Request</span>
-              </Button>
-
               <Dropdown
                 options={[
                   {
                     label: "Create Request",
                     id: "create-request",
                     icon: Plus,
-                    onClick: () => console.log("Create Request"),
+                    onClick: () => setCreateType("remoteCall"),
                   },
                   {
                     label: "Create Folder",
                     id: "create-folder",
                     icon: Folder,
-                    onClick: () => console.log("Create Folder"),
+                    onClick: () => setCreateType("node"),
                   },
+                ]}
+              >
+                <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Plus className="h-4 w-4" />
+                  <span className="sr-only">Create Request</span>
+                </Button>
+              </Dropdown>
+
+              <Dropdown
+                options={[
                   {
                     label: "Import",
                     id: "import",
@@ -140,6 +150,14 @@ export function Sidebar({ collapsed }: SidebarProps) {
         confirmText="Delete"
         confirmVariant="destructive"
       />
+
+      {createType && (
+        <CreateThreeNodeDialog
+          type={createType}
+          isOpen={!!createType}
+          onClose={() => setCreateType(null)}
+        />
+      )}
     </>
   );
 }

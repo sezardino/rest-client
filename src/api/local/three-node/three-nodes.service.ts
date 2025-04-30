@@ -1,10 +1,11 @@
 import { HTTP_METHODS } from "@/const/http-methods";
-import type { ThreeNode, ThreeNodesWithRelations } from "../api.entity";
-import { ThreeNodeSchema } from "../api.schema";
-import { AbstractLocalApiService } from "./local.abstract";
-import { LS_API_NAMES } from "./local.const";
-import { MOCK_LOCAL_THREE_NODES } from "./mocks";
-import type { RemoteCallsService } from "./remote-calls.service";
+import type { ThreeNode, ThreeNodesWithRelations } from "../../api.entity";
+import { ThreeNodeSchema } from "../../api.schema";
+import { AbstractLocalApiService } from "../local.abstract";
+import { LS_API_NAMES } from "../local.const";
+import { MOCK_LOCAL_THREE_NODES } from "../mocks";
+import type { RemoteCallsService } from "../remote-calls/remote-calls.service";
+import type { CreateThreeNodeDto } from "./three-nodes.types";
 
 export class ThreeNodesService extends AbstractLocalApiService<
   Omit<ThreeNode, "remoteCall">
@@ -63,16 +64,30 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return this.sortNodes(rootNodes);
   }
 
-  async add(dto: Omit<ThreeNode, "id">) {
-    const newNode = await super.create(dto);
+  async add(dto: CreateThreeNodeDto) {
+    const allNodes = await super.getAll();
+    const maxOrder = Math.max(
+      ...allNodes
+        .filter((node) => node.parentId === dto.parentId)
+        .map((node) => node.order),
+      0
+    );
+
+    const newNode = await super.create({
+      ...dto,
+      order: maxOrder + 1,
+      remoteCallId: null,
+    });
 
     if (dto.type !== "remoteCall") return;
+    console.log(dto);
 
     const newRemoteCall = await this.remoteCallsService.create({
       method: HTTP_METHODS.GET,
       threeNodeId: newNode.id,
       url: "",
     });
+    console.log(newRemoteCall);
 
     await this.update(newNode.id, { remoteCallId: newRemoteCall.id });
   }
