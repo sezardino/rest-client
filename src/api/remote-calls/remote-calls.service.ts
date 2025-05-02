@@ -32,4 +32,10 @@ export class RemoteCallsService extends AbstractLocalApiService<RemoteCall> {
 
     await this.deleteMany(remoteCallsToDelete);
   }
+
+  async duplicate(id: string): Promise<RemoteCall> {
+    const item = await this.getById(id);
+    const { id: _, threeNodeId: __, ...rest } = item;
+    return this.create({ ...rest, threeNodeId: null });
+  }
 }

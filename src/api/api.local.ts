@@ -6,11 +6,11 @@ export class LocalApiService {
   remoteCalls: RemoteCallsService;
 
   constructor() {
-    this.remoteCalls = new RemoteCallsService();
+    const remoteCallsService = new RemoteCallsService();
+    const threeNodesService = new ThreeNodesService(remoteCallsService);
 
-    this.threeNodes = new ThreeNodesService(this.remoteCalls);
+    this.remoteCalls = remoteCallsService;
 
-    this.remoteCalls.save();
-    this.threeNodes.save();
+    this.threeNodes = threeNodesService;
   }
 }

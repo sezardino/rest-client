@@ -1,5 +1,5 @@
-import type { RemoteCall } from "@/api/api.entity";
 import { HTTP_METHODS } from "@/const/http-methods";
+import type { RemoteCall } from "../remote-calls/remote-calls.entity";
 import { MOCKS_IDS_CONSTANTS } from "./mocks.const";
 
 export const MOCK_LOCAL_REMOTE_CALLS: RemoteCall[] = [

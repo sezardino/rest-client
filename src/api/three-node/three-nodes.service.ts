@@ -8,7 +8,10 @@ import type { RemoteCallsService } from "../remote-calls";
 
 import type { ThreeNode, ThreeNodesWithRelations } from "./three-nodes.entity";
 import { ThreeNodeSchema } from "./three-nodes.schema";
-import type { CreateThreeNodeDto } from "./three-nodes.types";
+import type {
+  CreateThreeNodeDto,
+  DuplicateThreeNodeDto,
+} from "./three-nodes.types";
 
 export class ThreeNodesService extends AbstractLocalApiService<
   Omit<ThreeNode, "remoteCall">
@@ -204,10 +207,11 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return currentLevel + maxInnerLevel;
   }
   private async createNodeCopy(
-    node: ThreeNode,
+    nodeId: string,
     parentId: string | null,
     name?: string
   ): Promise<string> {
+    const node = await this.getById(nodeId);
     let newRemoteCallId = null;
 
     if (node.type === "remoteCall" && node.remoteCallId) {
@@ -215,10 +219,9 @@ export class ThreeNodesService extends AbstractLocalApiService<
         node.remoteCallId
       );
       if (remoteCall) {
-        const newRemoteCall = await this.remoteCallsService.create({
-          ...remoteCall,
-          threeNodeId: null,
-        });
+        const newRemoteCall = await this.remoteCallsService.duplicate(
+          node.remoteCallId
+        );
         newRemoteCallId = newRemoteCall.id;
       }
     }
@@ -231,22 +234,25 @@ export class ThreeNodesService extends AbstractLocalApiService<
       order: node.order + 1,
     });
 
+    if (newNode.type === "remoteCall" && newRemoteCallId) {
+      await this.remoteCallsService.update(newRemoteCallId, {
+        threeNodeId: newNode.id,
+      });
+    }
+
     if (node.type === "node") {
       const children = await this.getChildren(node.id);
       await Promise.all(
-        children.map((child) => this.createNodeCopy(child, newNode.id))
+        children.map((child) => this.createNodeCopy(child.id, newNode.id))
       );
     }
 
     return newNode.id;
   }
 
-  async duplicateNode(
-    nodeId: string,
-    name: string,
-    parentId: string | null = null
-  ): Promise<void> {
-    const sourceNode = await this.getById(nodeId);
-    await this.createNodeCopy(sourceNode, parentId, name);
+  async duplicateNode(dto: DuplicateThreeNodeDto): Promise<void> {
+    const { id, name } = dto;
+
+    await this.createNodeCopy(id, null, name);
   }
 }

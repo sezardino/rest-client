@@ -1,5 +1,6 @@
 import type { OneFieldFormDialogProps } from "@/components/ui/one-field-form-dialog";
 import { OneFieldFormDialog } from "@/components/ui/one-field-form-dialog";
+import { useDuplicateThreeNodeMutation } from "@/hooks/tanstack/three-nodes/duplicate-three-node.mutation";
 import { ThreeNodeNameSchema } from "@/schema/three-node-name";
 
 export type DuplicateThreeNodeDialogProps = {
@@ -11,10 +12,12 @@ export const DuplicateThreeNodeDialog = (
 ) => {
   const { nodeId, isOpen, onClose } = props;
 
+  const { mutateAsync, isPending } = useDuplicateThreeNodeMutation();
+
   const duplicateHandler = async (value: string) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Duplicating node:", { nodeId, newName: value });
+      await mutateAsync({ id: nodeId, name: value });
+
       onClose();
     } catch (error) {
       console.error(error);
@@ -30,7 +33,7 @@ export const DuplicateThreeNodeDialog = (
       placeholder="Copy"
       schema={ThreeNodeNameSchema}
       isOpen={isOpen}
-      isLoading={false}
+      isLoading={isPending}
       onClose={onClose}
       onConfirm={duplicateHandler}
     />

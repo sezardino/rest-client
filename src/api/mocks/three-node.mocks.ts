@@ -1,4 +1,4 @@
-import type { ThreeNode } from "@/api/api.entity";
+import type { ThreeNode } from "../three-node";
 import { MOCKS_IDS_CONSTANTS } from "./mocks.const";
 
 export const MOCK_LOCAL_THREE_NODES: ThreeNode[] = [
