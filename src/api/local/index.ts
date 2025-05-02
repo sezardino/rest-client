@@ -3,7 +3,7 @@ import { ThreeNodesService } from "./three-node";
 
 export * from "./three-node/three-nodes.types";
 
-class LocalApiService {
+export class LocalApiService {
   threeNodes: ThreeNodesService;
   remoteCalls: RemoteCallsService;
 
@@ -11,7 +11,8 @@ class LocalApiService {
     this.remoteCalls = new RemoteCallsService();
 
     this.threeNodes = new ThreeNodesService(this.remoteCalls);
+
+    this.remoteCalls.save();
+    this.threeNodes.save();
   }
 }
-
-export const localApi = new LocalApiService();

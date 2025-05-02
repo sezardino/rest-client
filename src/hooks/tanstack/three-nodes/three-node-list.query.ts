@@ -1,4 +1,4 @@
-import { localApi } from "@/api/local";
+import { localApi } from "@/api";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { THREE_NODE_BASIC_QUERY_KEY } from "./three-node.const";
 

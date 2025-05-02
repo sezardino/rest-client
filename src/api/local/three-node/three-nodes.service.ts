@@ -31,6 +31,13 @@ export class ThreeNodesService extends AbstractLocalApiService<
       .sort((a, b) => a.order - b.order);
   }
 
+  private async getChildren(parentId: string) {
+    await this.getById(parentId);
+
+    const allNodes = await super.getAll();
+    return allNodes.filter((node) => node.parentId === parentId);
+  }
+
   async getAll(): Promise<ThreeNodesWithRelations[]> {
     const flatNodes = await super.getAll();
 
@@ -163,8 +170,6 @@ export class ThreeNodesService extends AbstractLocalApiService<
 
   async getMaxInnerLevel(nodeId: string): Promise<number> {
     const allNodes = await this.getAll();
-    const node = allNodes.find((n) => n.id === nodeId);
-    if (!node) throw new ApiError(`Node not found`, 404);
 
     const visitedNodes = new Set<string>();
     const calculateDepth = (currentNodeId: string): number => {
@@ -192,11 +197,54 @@ export class ThreeNodesService extends AbstractLocalApiService<
   }
 
   async getFullNodeLevel(nodeId: string): Promise<number> {
-    const node = await this.getById(nodeId);
-
     const currentLevel = await this.getNodeLevel(nodeId);
     const maxInnerLevel = await this.getMaxInnerLevel(nodeId);
 
     return currentLevel + maxInnerLevel;
+  }
+  private async createNodeCopy(
+    node: ThreeNode,
+    parentId: string | null,
+    isRoot: boolean
+  ): Promise<string> {
+    let newRemoteCallId = null;
+
+    if (node.type === "remoteCall" && node.remoteCallId) {
+      const remoteCall = await this.remoteCallsService.getById(
+        node.remoteCallId
+      );
+      if (remoteCall) {
+        const newRemoteCall = await this.remoteCallsService.create({
+          ...remoteCall,
+          threeNodeId: null,
+        });
+        newRemoteCallId = newRemoteCall.id;
+      }
+    }
+
+    const newNode = await super.create({
+      ...node,
+      parentId,
+      name: isRoot ? `Copy ${node.name}` : node.name,
+      remoteCallId: newRemoteCallId,
+      order: node.order + 1,
+    });
+
+    if (node.type === "node") {
+      const children = await this.getChildren(node.id);
+      await Promise.all(
+        children.map((child) => this.createNodeCopy(child, newNode.id, false))
+      );
+    }
+
+    return newNode.id;
+  }
+
+  async duplicateNode(
+    nodeId: string,
+    parentId: string | null = null
+  ): Promise<void> {
+    const sourceNode = await this.getById(nodeId);
+    await this.createNodeCopy(sourceNode, parentId, true);
   }
 }
