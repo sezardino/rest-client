@@ -205,7 +205,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
   private async createNodeCopy(
     node: ThreeNode,
     parentId: string | null,
-    isRoot: boolean
+    name?: string
   ): Promise<string> {
     let newRemoteCallId = null;
 
@@ -225,7 +225,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
     const newNode = await super.create({
       ...node,
       parentId,
-      name: isRoot ? `Copy ${node.name}` : node.name,
+      name: name || node.name,
       remoteCallId: newRemoteCallId,
       order: node.order + 1,
     });
@@ -233,7 +233,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
     if (node.type === "node") {
       const children = await this.getChildren(node.id);
       await Promise.all(
-        children.map((child) => this.createNodeCopy(child, newNode.id, false))
+        children.map((child) => this.createNodeCopy(child, newNode.id))
       );
     }
 
@@ -242,9 +242,10 @@ export class ThreeNodesService extends AbstractLocalApiService<
 
   async duplicateNode(
     nodeId: string,
+    name: string,
     parentId: string | null = null
   ): Promise<void> {
     const sourceNode = await this.getById(nodeId);
-    await this.createNodeCopy(sourceNode, parentId, true);
+    await this.createNodeCopy(sourceNode, parentId, name);
   }
 }

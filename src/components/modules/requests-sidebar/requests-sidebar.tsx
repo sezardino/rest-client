@@ -11,6 +11,7 @@ import {
   CreateThreeNodeDialog,
   type CreateThreeNodeDialogProps,
 } from "../create-three-node";
+import { DuplicateThreeNodeDialog } from "../duplicate-three-node";
 import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
 import { SidebarTreeNode } from "./sidebar-three-node";
 
@@ -26,6 +27,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
     CreateThreeNodeDialogProps["type"] | null
   >(null);
   const [parentNodeId, setParentNodeId] = useState<string | null>(null);
+  const [nodeToDuplicate, setNodeToDuplicate] = useState<string | null>(null);
 
   const { data: threeNodes, isLoading: isThreeNodesLoading } =
     useThreeNodeListQuery();
@@ -117,7 +119,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
                   method={item.remoteCall?.method!}
                   name={item.name}
                   onDeleteNodeClick={() => setNodeToDelete(item.id)}
-                  onDuplicateNodeClick={() => console.log("Duplicate", item.id)}
+                  onDuplicateNodeClick={() => setNodeToDuplicate(item.id)}
                 />
               )}
               {item.type === "node" && (
@@ -130,9 +132,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
                     setCreateType(type);
                     parentId && setParentNodeId(parentId);
                   }}
-                  onDuplicateNodeClick={(nodeId) =>
-                    console.log("Duplicate", nodeId)
-                  }
+                  onDuplicateNodeClick={setNodeToDuplicate}
                   className="flex-1 overflow-auto"
                 />
               )}
@@ -168,6 +168,14 @@ export function Sidebar({ collapsed }: SidebarProps) {
           parentNodeId={parentNodeId}
           isOpen={!!createType}
           onClose={closeCreateNodeDialog}
+        />
+      )}
+
+      {nodeToDuplicate && (
+        <DuplicateThreeNodeDialog
+          nodeId={nodeToDuplicate}
+          isOpen={!!nodeToDuplicate}
+          onClose={() => setNodeToDuplicate(null)}
         />
       )}
     </>
