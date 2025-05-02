@@ -10,7 +10,7 @@ import { useState } from "react";
 import {
   CreateThreeNodeDialog,
   type CreateThreeNodeDialogProps,
-} from "./create-three-node-dialog";
+} from "../create-three-node";
 import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
 import { SidebarTreeNode } from "./sidebar-three-node";
 
