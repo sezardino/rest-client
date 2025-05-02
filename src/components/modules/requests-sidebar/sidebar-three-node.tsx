@@ -1,4 +1,3 @@
-import type { ThreeNodeType, ThreeNodeWithRelations } from "@/api/api.schema";
 import { Button } from "@/components/ui/button";
 import { Collapsible } from "@/components/ui/collapsible";
 import { Dropdown } from "@/components/ui/dropdown";
@@ -19,6 +18,10 @@ import {
 } from "lucide-react";
 import { Fragment, useState, type ComponentProps } from "react";
 import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
+import type {
+  ThreeNodeWithRelations,
+  ThreeNodeType,
+} from "@/api/three-node/three-nodes.schema";
 
 export type SidebarTreeNodeProps = ComponentProps<"div"> & {
   nodeId?: string;

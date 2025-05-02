@@ -88,7 +88,7 @@ export class AbstractLocalApiService<T extends BasicItem> {
     return new Promise((resolve) => setTimeout(() => resolve(item), 500));
   }
 
-  async create(dto: Omit<T, "id">): Promise<T> {
+  protected async create(dto: Omit<T, "id">): Promise<T> {
     const newItem = { ...dto, id: crypto.randomUUID() } as T;
     const validation = this.entitySchema.safeParse(newItem);
 

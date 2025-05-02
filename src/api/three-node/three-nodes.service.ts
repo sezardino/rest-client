@@ -106,9 +106,9 @@ export class ThreeNodesService extends AbstractLocalApiService<
 
     if (type !== "remoteCall" || remoteCallId) return newNode;
 
-    const newRemoteCall = await this.remoteCallsService.create({
+    const newRemoteCall = await this.remoteCallsService.add({
       method: HTTP_METHODS.GET,
-      threeNodeId: newNode.id,
+      treeNodeId: newNode.id,
       url: "",
     });
 
@@ -243,7 +243,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
 
     if (newNode.type === "remoteCall" && newRemoteCallId) {
       await this.remoteCallsService.update(newRemoteCallId, {
-        threeNodeId: newNode.id,
+        treeNodeId: newNode.id,
       });
     }
 

@@ -1,9 +1,9 @@
+import type { ThreeNodeType } from "@/api/three-node/three-nodes.schema";
 import type { OneFieldFormDialogProps } from "@/components/ui/one-field-form-dialog";
 import { OneFieldFormDialog } from "@/components/ui/one-field-form-dialog";
 import { useCreateThreeNodeMutation } from "@/hooks/tanstack/three-nodes/create-three-node.mutation";
 import { ThreeNodeNameSchema } from "@/schema/three-node-name";
 import { CREATE_THREE_NODE_DIALOG_COPY_MAP } from "./create-three-node-dialog.const";
-import type { ThreeNodeType } from "@/api/three-node/three-nodes.schema";
 
 export type CreateThreeNodeDialogType = Extract<
   ThreeNodeType,
@@ -42,7 +42,7 @@ export const CreateThreeNodeDialog = (props: CreateThreeNodeDialogProps) => {
       placeholder={CREATE_THREE_NODE_DIALOG_COPY_MAP[type].placeholder}
       schema={ThreeNodeNameSchema}
       isOpen={isOpen}
-      isLoading={isPending}
+      isActionPending={isPending}
       onClose={onClose}
       onConfirm={onCreate}
     />

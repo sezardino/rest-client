@@ -17,7 +17,7 @@ export class RemoteCallsService extends AbstractLocalApiService<RemoteCall> {
     const allRemoteCalls = await super.getAll();
 
     const filteredRemoteCalls = allRemoteCalls.filter(
-      (remoteCall) => remoteCall.threeNodeId === nodeId
+      (remoteCall) => remoteCall.treeNodeId === nodeId
     );
 
     return filteredRemoteCalls;
@@ -27,15 +27,27 @@ export class RemoteCallsService extends AbstractLocalApiService<RemoteCall> {
     const allRemoteCalls = await super.getAll();
 
     const remoteCallsToDelete = allRemoteCalls
-      .filter((remoteCall) => remoteCall.threeNodeId === nodeId)
+      .filter((remoteCall) => remoteCall.treeNodeId === nodeId)
       .map((remoteCall) => remoteCall.id);
 
     await this.deleteMany(remoteCallsToDelete);
   }
 
+  async add(
+    dto: Pick<RemoteCall, "method" | "url" | "treeNodeId">
+  ): Promise<RemoteCall> {
+    return await this.create({
+      ...dto,
+      params: [],
+      headers: [],
+      body: null,
+      auth: null,
+    });
+  }
+
   async duplicate(id: string): Promise<RemoteCall> {
     const item = await this.getById(id);
-    const { id: _, threeNodeId: __, ...rest } = item;
-    return this.create({ ...rest, threeNodeId: null });
+    const { id: _, treeNodeId: __, ...rest } = item;
+    return this.create({ ...rest, treeNodeId: null });
   }
 }

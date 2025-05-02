@@ -1,9 +1,8 @@
 import { z } from "zod";
 
-import { HTTP_METHODS } from "@/const/http-methods";
-
 import type { RemoteCall } from "../remote-calls/remote-calls.entity";
 
+import { RemoteCallSchema } from "../remote-calls";
 import type { ThreeNode } from "./three-nodes.entity";
 
 export const THREE_NODE_TYPES = Object.freeze({
@@ -16,13 +15,6 @@ export const THREE_NODE_TYPES_ARRAY = Object.values(THREE_NODE_TYPES);
 export type ThreeNodeType =
   (typeof THREE_NODE_TYPES)[keyof typeof THREE_NODE_TYPES];
 
-export const RemoteCallSchema = z.object({
-  id: z.string().uuid(),
-  method: z.nativeEnum(HTTP_METHODS),
-  url: z.string(),
-  threeNodeId: z.string().uuid().nullable(),
-});
-
 export type ThreeNodeWithRelations = {
   id: string;
   type: ThreeNodeType;
@@ -31,7 +23,7 @@ export type ThreeNodeWithRelations = {
   parentId: string | null;
   childNodes?: ThreeNodeWithRelations[];
   remoteCallId: string | null;
-  remoteCall?: z.infer<typeof RemoteCallSchema> | null;
+  remoteCall?: RemoteCall | null;
 };
 
 export const ThreeNodeSchema = z.object({
