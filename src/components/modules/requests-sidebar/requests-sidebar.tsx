@@ -25,6 +25,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
   const [createType, setCreateType] = useState<
     CreateThreeNodeDialogProps["type"] | null
   >(null);
+  const [parentNodeId, setParentNodeId] = useState<string | null>(null);
 
   const { data: threeNodes, isLoading: isThreeNodesLoading } =
     useThreeNodeListQuery();
@@ -36,6 +37,11 @@ export function Sidebar({ collapsed }: SidebarProps) {
 
     await deleteThreeNode(nodeToDelete);
     setNodeToDelete(null);
+  };
+
+  const closeCreateNodeDialog = () => {
+    setCreateType(null);
+    setParentNodeId(null);
   };
 
   return (
@@ -118,7 +124,12 @@ export function Sidebar({ collapsed }: SidebarProps) {
                 <SidebarTreeNode
                   name={item.name}
                   item={item}
+                  nodeId={item.id}
                   onDeleteNodeClick={setNodeToDelete}
+                  onAddNodeClick={(type, parentId) => {
+                    setCreateType(type);
+                    parentId && setParentNodeId(parentId);
+                  }}
                   onDuplicateNodeClick={(nodeId) =>
                     console.log("Duplicate", nodeId)
                   }
@@ -154,8 +165,9 @@ export function Sidebar({ collapsed }: SidebarProps) {
       {createType && (
         <CreateThreeNodeDialog
           type={createType}
+          parentNodeId={parentNodeId}
           isOpen={!!createType}
-          onClose={() => setCreateType(null)}
+          onClose={closeCreateNodeDialog}
         />
       )}
     </>

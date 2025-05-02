@@ -8,6 +8,7 @@ type DialogType = Extract<ThreeNodeType, "node" | "remoteCall">;
 
 export type CreateThreeNodeDialogProps = {
   type: DialogType;
+  parentNodeId: string | null;
 } & Pick<OneFieldFormDialogProps, "isOpen" | "onClose">;
 
 const schema = z.object({
@@ -40,7 +41,7 @@ const MODAL_COPY_MAP: Record<
 };
 
 export const CreateThreeNodeDialog = (props: CreateThreeNodeDialogProps) => {
-  const { type, isOpen, onClose } = props;
+  const { parentNodeId, type, isOpen, onClose } = props;
 
   const { mutateAsync, isPending } = useCreateThreeNodeMutation();
 
@@ -49,7 +50,7 @@ export const CreateThreeNodeDialog = (props: CreateThreeNodeDialogProps) => {
       await mutateAsync({
         type,
         name: value,
-        parentId: null,
+        parentId: parentNodeId,
       });
 
       onClose();
