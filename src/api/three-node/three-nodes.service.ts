@@ -82,6 +82,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
 
     if (parentId) {
       const parentLevel = await this.getNodeLevel(parentId);
+      console.log(parentLevel);
       if (parentLevel >= MAX_NODE_LEVEL)
         throw new ApiError(`Max depth limit exceed (${MAX_NODE_LEVEL})`, 400);
     }
@@ -154,9 +155,9 @@ export class ThreeNodesService extends AbstractLocalApiService<
   async getNodeLevel(nodeId: string): Promise<number> {
     const node = await this.getById(nodeId);
 
-    if (!node.parentId) return 0;
+    if (!node.parentId) return 1;
 
-    let level = 0;
+    let level = 1;
     let currentNode = node;
     const visitedNodes = new Set<string>();
 
