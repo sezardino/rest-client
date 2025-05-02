@@ -67,6 +67,12 @@ export class ThreeNodesService extends AbstractLocalApiService<
   }
 
   async add(dto: CreateThreeNodeDto) {
+    if (dto.parentId) {
+      const parentLevel = await this.getNodeLevel(dto.parentId);
+      if (parentLevel >= MAX_NODE_LEVEL)
+        throw new ApiError(`Max depth limit exceed (${MAX_NODE_LEVEL})`, 400);
+    }
+
     const allNodes = await super.getAll();
     const maxOrder = Math.max(
       ...allNodes
