@@ -1,12 +1,13 @@
 import { HTTP_METHODS } from "@/const/http-methods";
 import { MAX_NODE_LEVEL } from "@/const/max-level.const";
-import type { ThreeNode, ThreeNodesWithRelations } from "../../api.entity";
-import { ApiError } from "../../api.error";
-import { ThreeNodeSchema } from "../../api.schema";
-import { AbstractLocalApiService } from "../local.abstract";
-import { LS_API_NAMES } from "../local.const";
+
+import { ApiError } from "../api.error";
+import { AbstractLocalApiService, LS_API_NAMES } from "../local";
 import { MOCK_LOCAL_THREE_NODES } from "../mocks";
-import type { RemoteCallsService } from "../remote-calls/remote-calls.service";
+import type { RemoteCallsService } from "../remote-calls";
+
+import type { ThreeNode, ThreeNodesWithRelations } from "./three-nodes.entity";
+import { ThreeNodeSchema } from "./three-nodes.schema";
 import type { CreateThreeNodeDto } from "./three-nodes.types";
 
 export class ThreeNodesService extends AbstractLocalApiService<

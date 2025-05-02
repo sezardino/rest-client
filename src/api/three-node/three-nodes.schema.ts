@@ -1,6 +1,10 @@
-import { HTTP_METHODS } from "@/const/http-methods";
 import { z } from "zod";
-import type { RemoteCall, ThreeNode } from "./api.entity";
+
+import { HTTP_METHODS } from "@/const/http-methods";
+
+import type { RemoteCall } from "../remote-calls/remote-calls.entity";
+
+import type { ThreeNode } from "./three-nodes.entity";
 
 export const THREE_NODE_TYPES = Object.freeze({
   REMOTE_CALL: "remoteCall",

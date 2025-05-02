@@ -1,4 +1,4 @@
-import type { ThreeNode } from "../../api.entity";
+import type { ThreeNode } from "./three-nodes.entity";
 
 export type CreateThreeNodeDto = Omit<
   ThreeNode,
