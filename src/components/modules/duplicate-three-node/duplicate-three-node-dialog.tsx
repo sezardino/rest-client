@@ -1,6 +1,7 @@
 import type { OneFieldFormDialogProps } from "@/components/ui/one-field-form-dialog";
 import { OneFieldFormDialog } from "@/components/ui/one-field-form-dialog";
 import { useDuplicateThreeNodeMutation } from "@/hooks/tanstack/three-nodes/duplicate-three-node.mutation";
+import { useThreeNodeItemQuery } from "@/hooks/tanstack/three-nodes/three-node-item.query";
 import { ThreeNodeNameSchema } from "@/schema/three-node-name";
 
 export type DuplicateThreeNodeDialogProps = {
@@ -12,7 +13,10 @@ export const DuplicateThreeNodeDialog = (
 ) => {
   const { nodeId, isOpen, onClose } = props;
 
-  const { mutateAsync, isPending } = useDuplicateThreeNodeMutation();
+  const { data: node, isLoading: isNodeLoading } =
+    useThreeNodeItemQuery(nodeId);
+  const { mutateAsync, isPending: isNodeDuplicating } =
+    useDuplicateThreeNodeMutation();
 
   const duplicateHandler = async (value: string) => {
     try {
@@ -24,6 +28,8 @@ export const DuplicateThreeNodeDialog = (
     }
   };
 
+  console.log({ isNodeLoading, node: node?.name });
+
   return (
     <OneFieldFormDialog
       title="Duplicate Item"
@@ -31,9 +37,11 @@ export const DuplicateThreeNodeDialog = (
       label="Name"
       fieldDescription="Enter a name for the duplicate"
       placeholder="Copy"
+      initialValue={node?.name}
       schema={ThreeNodeNameSchema}
       isOpen={isOpen}
-      isLoading={isPending}
+      isActionPending={isNodeDuplicating}
+      isDataLoading={isNodeLoading}
       onClose={onClose}
       onConfirm={duplicateHandler}
     />

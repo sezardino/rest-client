@@ -77,38 +77,45 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return this.sortNodes(rootNodes);
   }
 
-  async add(dto: CreateThreeNodeDto) {
-    if (dto.parentId) {
-      const parentLevel = await this.getNodeLevel(dto.parentId);
+  async add(dto: CreateThreeNodeDto): Promise<ThreeNode> {
+    const { parentId, type, remoteCallId = null, name } = dto;
+
+    if (parentId) {
+      const parentLevel = await this.getNodeLevel(parentId);
       if (parentLevel >= MAX_NODE_LEVEL)
         throw new ApiError(`Max depth limit exceed (${MAX_NODE_LEVEL})`, 400);
     }
 
     const allNodes = await super.getAll();
-    const maxOrder = Math.max(
-      ...allNodes
-        .filter((node) => node.parentId === dto.parentId)
-        .map((node) => node.order),
-      0
-    );
+    const neededOrder =
+      Math.max(
+        ...allNodes
+          .filter((node) => node.parentId === dto.parentId)
+          .map((node) => node.order),
+        0
+      ) + 1;
 
     const newNode = await super.create({
-      ...dto,
-      order: maxOrder + 1,
-      remoteCallId: null,
+      name,
+      type,
+      parentId,
+      order: neededOrder,
+      remoteCallId,
     });
 
-    if (dto.type !== "remoteCall") return;
-    console.log(dto);
+    if (type !== "remoteCall" || remoteCallId) return newNode;
 
     const newRemoteCall = await this.remoteCallsService.create({
       method: HTTP_METHODS.GET,
       threeNodeId: newNode.id,
       url: "",
     });
-    console.log(newRemoteCall);
 
-    await this.update(newNode.id, { remoteCallId: newRemoteCall.id });
+    const updatedNode = await this.update(newNode.id, {
+      remoteCallId: newRemoteCall.id,
+    });
+
+    return updatedNode;
   }
 
   async deleteByParentId(parentId: string): Promise<void> {
@@ -226,12 +233,11 @@ export class ThreeNodesService extends AbstractLocalApiService<
       }
     }
 
-    const newNode = await super.create({
+    const newNode = await this.add({
       ...node,
       parentId,
       name: name || node.name,
       remoteCallId: newRemoteCallId,
-      order: node.order + 1,
     });
 
     if (newNode.type === "remoteCall" && newRemoteCallId) {

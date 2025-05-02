@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "./alert-dialog";
 import { Button, type ButtonVariants } from "./button";
+import { LoadingSpinner } from "./loading-spinner";
 
 type OmittedProps = Omit<AlertDialogProps, "onOpenChange" | "open">;
 type PickedFormProps = Pick<
@@ -29,7 +30,8 @@ export type OneFieldFormDialogProps = OmittedProps &
     onConfirm: (value: string) => void;
     isOpen: boolean;
     onClose: () => void;
-    isLoading?: boolean;
+    isActionPending?: boolean;
+    isDataLoading?: boolean;
   };
 
 export const OneFieldFormDialog = (props: OneFieldFormDialogProps) => {
@@ -47,7 +49,8 @@ export const OneFieldFormDialog = (props: OneFieldFormDialogProps) => {
     isOpen,
     onClose,
     onConfirm,
-    isLoading = false,
+    isActionPending = false,
+    isDataLoading = false,
     ...rest
   } = props;
 
@@ -56,34 +59,41 @@ export const OneFieldFormDialog = (props: OneFieldFormDialogProps) => {
   return (
     <AlertDialog {...rest} open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
+        {isDataLoading && <LoadingSpinner className="h-100" />}
 
-        <OneFieldForm
-          id={formId}
-          label={label}
-          description={fieldDescription}
-          placeholder={placeholder}
-          initialValue={initialValue}
-          schema={schema}
-          onSubmit={onConfirm}
-        />
+        {!isDataLoading && (
+          <>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              <AlertDialogDescription>{description}</AlertDialogDescription>
+            </AlertDialogHeader>
 
-        <AlertDialogFooter className="mt-4">
-          <AlertDialogCancel onClick={onClose} type="button">
-            {cancelText}
-          </AlertDialogCancel>
-          <Button
-            form={formId}
-            variant={confirmVariant}
-            type="submit"
-            disabled={isLoading}
-          >
-            {confirmText}
-          </Button>
-        </AlertDialogFooter>
+            <OneFieldForm
+              id={formId}
+              label={label}
+              description={fieldDescription}
+              placeholder={placeholder}
+              initialValue={initialValue}
+              isDisabled={isActionPending}
+              schema={schema}
+              onSubmit={onConfirm}
+            />
+
+            <AlertDialogFooter className="mt-4">
+              <AlertDialogCancel onClick={onClose} type="button">
+                {cancelText}
+              </AlertDialogCancel>
+              <Button
+                form={formId}
+                variant={confirmVariant}
+                type="submit"
+                disabled={isActionPending}
+              >
+                {confirmText}
+              </Button>
+            </AlertDialogFooter>
+          </>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );

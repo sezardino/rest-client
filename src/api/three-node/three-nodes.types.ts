@@ -1,8 +1,6 @@
 import type { ThreeNode } from "./three-nodes.entity";
 
-export type CreateThreeNodeDto = Omit<
-  ThreeNode,
-  "id" | "order" | "remoteCallId" | "remoteCall"
->;
+export type CreateThreeNodeDto = Pick<ThreeNode, "name" | "parentId" | "type"> &
+  Partial<Pick<ThreeNode, "remoteCallId">>;
 
 export type DuplicateThreeNodeDto = Pick<ThreeNode, "id" | "name">;

@@ -24,6 +24,7 @@ export type OneFieldFormProps = OmittedComponentProps & {
   initialValue?: string;
   schema: ZodType<OneFieldFormValues>;
   onSubmit: (value: string) => void;
+  isDisabled?: boolean;
 };
 
 export const OneFieldForm = (props: OneFieldFormProps) => {
@@ -34,6 +35,7 @@ export const OneFieldForm = (props: OneFieldFormProps) => {
     initialValue,
     onSubmit,
     schema,
+    isDisabled,
     className,
     ...rest
   } = props;
@@ -66,6 +68,7 @@ export const OneFieldForm = (props: OneFieldFormProps) => {
             <Input
               autoFocus
               name="value"
+              disabled={isDisabled}
               placeholder={placeholder || ""}
               defaultValue={initialValue || ""}
             />

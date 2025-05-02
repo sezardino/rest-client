@@ -85,7 +85,7 @@ export class AbstractLocalApiService<T extends BasicItem> {
       throw new ApiError(`Item with id ${id} not found`, 404);
     }
 
-    return item;
+    return new Promise((resolve) => setTimeout(() => resolve(item), 500));
   }
 
   async create(dto: Omit<T, "id">): Promise<T> {
@@ -101,7 +101,7 @@ export class AbstractLocalApiService<T extends BasicItem> {
     return newItem;
   }
 
-  async update(id: string, dto: Partial<Omit<T, "id">>): Promise<void> {
+  async update(id: string, dto: Partial<Omit<T, "id">>): Promise<T> {
     const data = await this.getData();
     const index = data.findIndex((i) => i.id === id);
 
@@ -118,6 +118,8 @@ export class AbstractLocalApiService<T extends BasicItem> {
 
     data[index] = updatedItem;
     await this.setData(data);
+
+    return updatedItem;
   }
 
   async delete(id: string): Promise<void> {
