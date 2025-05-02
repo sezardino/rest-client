@@ -1,5 +1,7 @@
 import { HTTP_METHODS } from "@/const/http-methods";
+import { MAX_NODE_LEVEL } from "@/const/max-level.const";
 import type { ThreeNode, ThreeNodesWithRelations } from "../../api.entity";
+import { ApiError } from "../../api.error";
 import { ThreeNodeSchema } from "../../api.schema";
 import { AbstractLocalApiService } from "../local.abstract";
 import { LS_API_NAMES } from "../local.const";
@@ -123,5 +125,72 @@ export class ThreeNodesService extends AbstractLocalApiService<
     await this.deleteByParentId(nodeId);
     await super.delete(nodeId);
     await this.remoteCallsService.deleteByNodeId(nodeId);
+  }
+
+  async getNodeLevel(nodeId: string): Promise<number> {
+    const node = await this.getById(nodeId);
+
+    if (!node.parentId) return 0;
+
+    let level = 0;
+    let currentNode = node;
+    const visitedNodes = new Set<string>();
+
+    while (currentNode.parentId) {
+      if (level >= MAX_NODE_LEVEL)
+        throw new ApiError(`Max depth limit exceed (${MAX_NODE_LEVEL})`, 400);
+
+      if (visitedNodes.has(currentNode.parentId))
+        throw new ApiError("Find circular expression", 400);
+
+      visitedNodes.add(currentNode.id);
+      level++;
+
+      const parentNode = await this.getById(currentNode.parentId);
+      if (!parentNode) throw new ApiError(`Parent node not found`, 404);
+
+      currentNode = parentNode;
+    }
+
+    return level;
+  }
+
+  async getMaxInnerLevel(nodeId: string): Promise<number> {
+    const allNodes = await this.getAll();
+    const node = allNodes.find((n) => n.id === nodeId);
+    if (!node) throw new ApiError(`Node not found`, 404);
+
+    const visitedNodes = new Set<string>();
+    const calculateDepth = (currentNodeId: string): number => {
+      if (visitedNodes.has(currentNodeId))
+        throw new ApiError("Find circular expression", 400);
+
+      visitedNodes.add(currentNodeId);
+
+      const childNodes = allNodes.filter((n) => n.parentId === currentNodeId);
+      if (childNodes.length === 0) return 0;
+
+      const childDepths = childNodes.map((child) => {
+        const depth = calculateDepth(child.id);
+        if (depth >= MAX_NODE_LEVEL)
+          throw new ApiError(`Max depth limit exceed (${MAX_NODE_LEVEL})`, 400);
+
+        return depth;
+      });
+
+      visitedNodes.delete(currentNodeId);
+      return Math.max(...childDepths) + 1;
+    };
+
+    return calculateDepth(nodeId);
+  }
+
+  async getFullNodeLevel(nodeId: string): Promise<number> {
+    const node = await this.getById(nodeId);
+
+    const currentLevel = await this.getNodeLevel(nodeId);
+    const maxInnerLevel = await this.getMaxInnerLevel(nodeId);
+
+    return currentLevel + maxInnerLevel;
   }
 }

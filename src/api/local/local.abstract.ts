@@ -136,6 +136,12 @@ export class AbstractLocalApiService<T extends BasicItem> {
     await Promise.all(ids.map((id) => this.delete(id)));
   }
 
+  async duplicate(id: string): Promise<T> {
+    const item = await this.getById(id);
+    const { id: _, ...itemWithoutId } = item;
+    return this.create(itemWithoutId);
+  }
+
   async save() {
     const items = await this.getAll();
     await this.setData(items);
