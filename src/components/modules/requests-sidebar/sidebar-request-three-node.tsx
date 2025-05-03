@@ -56,9 +56,14 @@ export const SidebarRequestThreeNode = (
         <Button
           variant="ghost"
           size="icon"
+          asChild
+          isNotButton
           className="h-6 w-6 opacity-0 group-hover:opacity-100"
+          aria-label="Open actions menu"
         >
-          <MoreVertical className="h-3.5 w-3.5" />
+          <span>
+            <MoreVertical className="h-3.5 w-3.5" />
+          </span>
         </Button>
       </Dropdown>
     </li>

@@ -1,3 +1,7 @@
+import type {
+  ThreeNodeType,
+  ThreeNodeWithRelations,
+} from "@/api/three-node/three-nodes.schema";
 import { Button } from "@/components/ui/button";
 import { Collapsible } from "@/components/ui/collapsible";
 import { Dropdown } from "@/components/ui/dropdown";
@@ -18,10 +22,6 @@ import {
 } from "lucide-react";
 import { Fragment, useState, type ComponentProps } from "react";
 import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
-import type {
-  ThreeNodeWithRelations,
-  ThreeNodeType,
-} from "@/api/three-node/three-nodes.schema";
 
 export type SidebarTreeNodeProps = ComponentProps<"div"> & {
   nodeId?: string;
@@ -94,8 +94,17 @@ export const SidebarTreeNode = (props: SidebarTreeNodeProps) => {
               },
             ]}
           >
-            <Button variant="ghost" size="icon" className="h-6 w-6">
-              <MoreVertical className="h-3.5 w-3.5" />
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              isNotButton
+              className="h-6 w-6 opacity-0 group-hover:opacity-100"
+              aria-label="Open actions menu"
+            >
+              <span>
+                <MoreVertical className="h-3.5 w-3.5" />
+              </span>
             </Button>
           </Dropdown>
         </div>

@@ -37,24 +37,41 @@ const buttonVariants = cva(
 
 export type ButtonVariants = VariantProps<typeof buttonVariants>;
 
-function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: React.ComponentProps<"button"> &
+type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-  }) {
+    isNotButton?: boolean;
+  };
+
+function Button(props: ButtonProps) {
+  const {
+    className,
+    variant,
+    size,
+    asChild = false,
+    isNotButton = false,
+    onKeyDown,
+    ...rest
+  } = props;
+
   const Comp = asChild ? Slot : "button";
+
+  const keyDownHandler = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (isNotButton && e.key === "Enter") {
+      e.currentTarget.click();
+    }
+    onKeyDown?.(e);
+  };
 
   return (
     <Comp
       data-slot="button"
       type="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
+      role={isNotButton ? "button" : undefined}
+      tabIndex={isNotButton ? 0 : undefined}
+      onKeyDown={keyDownHandler}
+      {...rest}
     />
   );
 }
