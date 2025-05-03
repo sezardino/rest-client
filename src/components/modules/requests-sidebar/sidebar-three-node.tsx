@@ -5,6 +5,7 @@ import type {
 import { Button } from "@/components/ui/button";
 import { Collapsible } from "@/components/ui/collapsible";
 import { Dropdown } from "@/components/ui/dropdown";
+import { ApplicationUrls } from "@/const/application-urls";
 import { cn } from "@/utils/cn";
 import {
   CollapsibleContent,
@@ -124,6 +125,7 @@ export const SidebarTreeNode = (props: SidebarTreeNodeProps) => {
               />
             ) : (
               <SidebarRequestThreeNode
+                to={ApplicationUrls.redactor.request(item.id)}
                 method={item.remoteCall?.method!}
                 name={item.name}
                 onDeleteNodeClick={() => onDeleteNodeClick(item.id)}

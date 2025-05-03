@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { cn } from "@/utils/cn";
 import { Copy, Globe, MoreVertical, Trash } from "lucide-react";
-import type { ComponentProps } from "react";
+import { Link, type LinkProps } from "react-router";
 import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
-export type SidebarRequestThreeNodeProps = ComponentProps<"div"> &
+export type SidebarRequestThreeNodeProps = LinkProps &
   Pick<RequestItem, "method" | "name"> & {
     onDeleteNodeClick: () => void;
     onDuplicateNodeClick: () => void;
@@ -25,7 +25,7 @@ export const SidebarRequestThreeNode = (
   } = props;
 
   return (
-    <div
+    <Link
       {...rest}
       className={cn(
         "flex items-center px-3 py-1 hover:bg-muted/50 cursor-pointer group",
@@ -66,6 +66,6 @@ export const SidebarRequestThreeNode = (
           </span>
         </Button>
       </Dropdown>
-    </div>
+    </Link>
   );
 };

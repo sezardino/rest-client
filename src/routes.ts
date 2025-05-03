@@ -5,13 +5,20 @@ import {
   prefix,
   route,
 } from "@react-router/dev/routes";
+import {
+  ApplicationUrlParams,
+  ApplicationUrlPrefixes,
+} from "./const/application-urls";
 
 export default [
   index("pages/index.tsx"),
   layout("./layouts/redactor.layout.tsx", [
-    ...prefix("redactor", [
+    ...prefix(ApplicationUrlPrefixes.redactor, [
       index("pages/redactor/index.tsx"),
-      route(":requestId", "pages/redactor/[requestId].tsx"),
+      route(
+        `${ApplicationUrlParams.requestId}`,
+        "pages/redactor/[requestId].tsx"
+      ),
     ]),
   ]),
 ] satisfies RouteConfig;

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
+import { ApplicationUrls } from "@/const/application-urls";
 import { useDeleteThreeNodeMutation } from "@/hooks/tanstack/three-nodes/delete-three-node.mutation";
 import { useThreeNodeListQuery } from "@/hooks/tanstack/three-nodes/three-node-list.query";
 import { cn } from "@/utils/cn";
@@ -116,6 +117,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
             <li key={item.id}>
               {item.type === "remoteCall" && (
                 <SidebarRequestThreeNode
+                  to={ApplicationUrls.redactor.request(item.id)}
                   method={item.remoteCall?.method!}
                   name={item.name}
                   onDeleteNodeClick={() => setNodeToDelete(item.id)}
