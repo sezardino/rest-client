@@ -3,10 +3,8 @@ export const meta = () => [
   { name: "description", content: "Welcome to React Router!" },
 ];
 
-import { RestClientInterface } from "@/components/rest-client-interface";
-
 const HomePage = () => {
-  return <RestClientInterface />;
+  return <h1>Home</h1>;
 };
 
 export default HomePage;

@@ -144,6 +144,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
           <Button
             variant="outline"
             className="w-full justify-start gap-2 text-xs"
+            onClick={() => setCreateType("remoteCall")}
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Create Request</span>
