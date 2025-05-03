@@ -1,16 +1,16 @@
 import { RemoteCallsService } from "./remote-calls";
-import { ThreeNodesService } from "./three-node";
+import { TreeNodesService } from "./tree-node";
 
 export class LocalApiService {
-  threeNodes: ThreeNodesService;
+  treeNodes: TreeNodesService;
   remoteCalls: RemoteCallsService;
 
   constructor() {
     const remoteCallsService = new RemoteCallsService();
-    const threeNodesService = new ThreeNodesService(remoteCallsService);
+    const treeNodesService = new TreeNodesService(remoteCallsService);
 
     this.remoteCalls = remoteCallsService;
 
-    this.threeNodes = threeNodesService;
+    this.treeNodes = treeNodesService;
   }
 }

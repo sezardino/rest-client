@@ -6,15 +6,13 @@ import { Link, type LinkProps } from "react-router";
 import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
-export type SidebarRequestThreeNodeProps = LinkProps &
+export type SidebarRequestTreeNodeProps = LinkProps &
   Pick<RequestItem, "method" | "name"> & {
     onDeleteNodeClick: () => void;
     onDuplicateNodeClick: () => void;
   };
 
-export const SidebarRequestThreeNode = (
-  props: SidebarRequestThreeNodeProps
-) => {
+export const SidebarRequestTreeNode = (props: SidebarRequestTreeNodeProps) => {
   const {
     method,
     name,

@@ -1,7 +1,7 @@
 import type {
-  ThreeNodeType,
-  ThreeNodeWithRelations,
-} from "@/api/three-node/three-nodes.schema";
+  TreeNodeType,
+  TreeNodeWithRelations,
+} from "@/api/tree-node/tree-nodes.schema";
 import { Button } from "@/components/ui/button";
 import { Collapsible } from "@/components/ui/collapsible";
 import { Dropdown } from "@/components/ui/dropdown";
@@ -22,14 +22,14 @@ import {
   Trash,
 } from "lucide-react";
 import { Fragment, useState, type ComponentProps } from "react";
-import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
+import { SidebarRequestTreeNode } from "./sidebar-request-tree-node";
 
 export type SidebarTreeNodeProps = ComponentProps<"div"> & {
   nodeId?: string;
   name: string;
   isExpanded?: boolean;
-  item: ThreeNodeWithRelations;
-  onAddNodeClick: (type: ThreeNodeType, parentId?: string) => void;
+  item: TreeNodeWithRelations;
+  onAddNodeClick: (type: TreeNodeType, parentId?: string) => void;
   onDeleteNodeClick: (nodeId: string) => void;
   onDuplicateNodeClick: (nodeId: string) => void;
 };
@@ -124,7 +124,7 @@ export const SidebarTreeNode = (props: SidebarTreeNodeProps) => {
                 onAddNodeClick={onAddNodeClick}
               />
             ) : (
-              <SidebarRequestThreeNode
+              <SidebarRequestTreeNode
                 to={ApplicationUrls.redactor.request(item.id)}
                 method={item.remoteCall?.method!}
                 name={item.name}

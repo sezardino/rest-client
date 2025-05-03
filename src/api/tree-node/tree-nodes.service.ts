@@ -3,30 +3,28 @@ import { MAX_NODE_LEVEL } from "@/const/max-level.const";
 
 import { ApiError } from "../api.error";
 import { AbstractLocalApiService, LS_API_NAMES } from "../local";
-import { MOCK_LOCAL_THREE_NODES } from "../mocks";
+import { MOCK_LOCAL_TREE_NODES } from "../mocks";
 import type { RemoteCallsService } from "../remote-calls";
 
-import type { ThreeNode, ThreeNodesWithRelations } from "./three-nodes.entity";
-import { ThreeNodeSchema } from "./three-nodes.schema";
+import type { TreeNode, TreeNodesWithRelations } from "./tree-nodes.entity";
+import { TreeNodeSchema } from "./tree-nodes.schema";
 import type {
-  CreateThreeNodeDto,
-  DuplicateThreeNodeDto,
-} from "./three-nodes.types";
+  CreateTreeNodeDto,
+  DuplicateTreeNodeDto,
+} from "./tree-nodes.types";
 
-export class ThreeNodesService extends AbstractLocalApiService<
-  Omit<ThreeNode, "remoteCall">
+export class TreeNodesService extends AbstractLocalApiService<
+  Omit<TreeNode, "remoteCall">
 > {
   constructor(private readonly remoteCallsService: RemoteCallsService) {
     super({
-      name: LS_API_NAMES.threeNode,
-      schema: ThreeNodeSchema,
-      defaultValue: MOCK_LOCAL_THREE_NODES,
+      name: LS_API_NAMES.treeNode,
+      schema: TreeNodeSchema,
+      defaultValue: MOCK_LOCAL_TREE_NODES,
     });
   }
 
-  private sortNodes(
-    nodes: ThreeNodesWithRelations[]
-  ): ThreeNodesWithRelations[] {
+  private sortNodes(nodes: TreeNodesWithRelations[]): TreeNodesWithRelations[] {
     return nodes
       .map((node) => ({
         ...node,
@@ -42,16 +40,16 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return allNodes.filter((node) => node.parentId === parentId);
   }
 
-  async getAll(): Promise<ThreeNodesWithRelations[]> {
+  async getAll(): Promise<TreeNodesWithRelations[]> {
     const flatNodes = await super.getAll();
 
-    const idToNodeMap = new Map<string, ThreeNodesWithRelations>();
+    const idToNodeMap = new Map<string, TreeNodesWithRelations>();
 
     for (const node of flatNodes) {
       idToNodeMap.set(node.id, { ...node, childNodes: [], remoteCall: null });
     }
 
-    const rootNodes: ThreeNodesWithRelations[] = [];
+    const rootNodes: TreeNodesWithRelations[] = [];
 
     for (const node of idToNodeMap.values()) {
       if (node.parentId) {
@@ -77,7 +75,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return this.sortNodes(rootNodes);
   }
 
-  async add(dto: CreateThreeNodeDto): Promise<ThreeNode> {
+  async add(dto: CreateTreeNodeDto): Promise<TreeNode> {
     const { parentId, type, remoteCallId = null, name } = dto;
 
     if (parentId) {
@@ -257,7 +255,7 @@ export class ThreeNodesService extends AbstractLocalApiService<
     return newNode.id;
   }
 
-  async duplicateNode(dto: DuplicateThreeNodeDto): Promise<void> {
+  async duplicateNode(dto: DuplicateTreeNodeDto): Promise<void> {
     const { id, name } = dto;
 
     await this.createNodeCopy(id, null, name);

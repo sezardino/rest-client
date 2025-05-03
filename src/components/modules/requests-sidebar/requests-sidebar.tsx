@@ -3,18 +3,18 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
 import { ApplicationUrls } from "@/const/application-urls";
-import { useDeleteThreeNodeMutation } from "@/hooks/tanstack/three-nodes/delete-three-node.mutation";
-import { useThreeNodeListQuery } from "@/hooks/tanstack/three-nodes/three-node-list.query";
+import { useDeleteTreeNodeMutation } from "@/hooks/tanstack/tree-nodes/delete-tree-node.mutation";
+import { useTreeNodeListQuery } from "@/hooks/tanstack/tree-nodes/tree-node-list.query";
 import { cn } from "@/utils/cn";
 import { FileDown, FileUp, Folder, MoreVertical, Plus } from "lucide-react";
 import { useState } from "react";
 import {
-  CreateThreeNodeDialog,
-  type CreateThreeNodeDialogProps,
-} from "../create-three-node";
-import { DuplicateThreeNodeDialog } from "../duplicate-three-node";
-import { SidebarRequestThreeNode } from "./sidebar-request-three-node";
-import { SidebarTreeNode } from "./sidebar-three-node";
+  CreateTreeNodeDialog,
+  type CreateTreeNodeDialogProps,
+} from "../create-tree-node";
+import { DuplicateTreeNodeDialog } from "../duplicate-tree-node";
+import { SidebarRequestTreeNode } from "./sidebar-request-tree-node";
+import { SidebarTreeNode } from "./sidebar-tree-node";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -25,20 +25,20 @@ export function Sidebar({ collapsed }: SidebarProps) {
 
   const [nodeToDelete, setNodeToDelete] = useState<string | null>(null);
   const [createType, setCreateType] = useState<
-    CreateThreeNodeDialogProps["type"] | null
+    CreateTreeNodeDialogProps["type"] | null
   >(null);
   const [parentNodeId, setParentNodeId] = useState<string | null>(null);
   const [nodeToDuplicate, setNodeToDuplicate] = useState<string | null>(null);
 
-  const { data: threeNodes, isLoading: isThreeNodesLoading } =
-    useThreeNodeListQuery();
-  const { mutateAsync: deleteThreeNode, isPending: isDeleteNodeLoading } =
-    useDeleteThreeNodeMutation();
+  const { data: treeNodes, isLoading: isTreeNodesLoading } =
+    useTreeNodeListQuery();
+  const { mutateAsync: deleteTreeNode, isPending: isDeleteNodeLoading } =
+    useDeleteTreeNodeMutation();
 
   const deleteNodeHandler = async () => {
     if (!nodeToDelete) return;
 
-    await deleteThreeNode(nodeToDelete);
+    await deleteTreeNode(nodeToDelete);
     setNodeToDelete(null);
   };
 
@@ -113,10 +113,10 @@ export function Sidebar({ collapsed }: SidebarProps) {
         </header>
 
         <ul className="flex-1 overflow-auto">
-          {threeNodes?.map((item) => (
+          {treeNodes?.map((item) => (
             <li key={item.id}>
               {item.type === "remoteCall" && (
-                <SidebarRequestThreeNode
+                <SidebarRequestTreeNode
                   to={ApplicationUrls.redactor.request(item.id)}
                   method={item.remoteCall?.method!}
                   name={item.name}
@@ -166,7 +166,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
       />
 
       {createType && (
-        <CreateThreeNodeDialog
+        <CreateTreeNodeDialog
           type={createType}
           parentNodeId={parentNodeId}
           isOpen={!!createType}
@@ -175,7 +175,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
       )}
 
       {nodeToDuplicate && (
-        <DuplicateThreeNodeDialog
+        <DuplicateTreeNodeDialog
           nodeId={nodeToDuplicate}
           isOpen={!!nodeToDuplicate}
           onClose={() => setNodeToDuplicate(null)}

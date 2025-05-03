@@ -1,7 +1,7 @@
-import type { ThreeNode } from "../three-node";
+import type { TreeNode } from "../tree-node";
 import { MOCKS_IDS_CONSTANTS } from "./mocks.const";
 
-export const MOCK_LOCAL_THREE_NODES: ThreeNode[] = [
+export const MOCK_LOCAL_TREE_NODES: TreeNode[] = [
   {
     id: MOCKS_IDS_CONSTANTS.AUTHENTICATION_NODE_ID,
     type: "node",

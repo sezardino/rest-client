@@ -1,22 +1,21 @@
 import type { OneFieldFormDialogProps } from "@/components/ui/one-field-form-dialog";
 import { OneFieldFormDialog } from "@/components/ui/one-field-form-dialog";
-import { useDuplicateThreeNodeMutation } from "@/hooks/tanstack/three-nodes/duplicate-three-node.mutation";
-import { useThreeNodeItemQuery } from "@/hooks/tanstack/three-nodes/three-node-item.query";
-import { ThreeNodeNameSchema } from "@/schema/three-node-name";
+import { useDuplicateTreeNodeMutation } from "@/hooks/tanstack/tree-nodes/duplicate-tree-node.mutation";
+import { useTreeNodeItemQuery } from "@/hooks/tanstack/tree-nodes/tree-node-item.query";
+import { TreeNodeNameSchema } from "@/schema/tree-node-name";
 
-export type DuplicateThreeNodeDialogProps = {
+export type DuplicateTreeNodeDialogProps = {
   nodeId: string;
 } & Pick<OneFieldFormDialogProps, "isOpen" | "onClose">;
 
-export const DuplicateThreeNodeDialog = (
-  props: DuplicateThreeNodeDialogProps
+export const DuplicateTreeNodeDialog = (
+  props: DuplicateTreeNodeDialogProps
 ) => {
   const { nodeId, isOpen, onClose } = props;
 
-  const { data: node, isLoading: isNodeLoading } =
-    useThreeNodeItemQuery(nodeId);
+  const { data: node, isLoading: isNodeLoading } = useTreeNodeItemQuery(nodeId);
   const { mutateAsync, isPending: isNodeDuplicating } =
-    useDuplicateThreeNodeMutation();
+    useDuplicateTreeNodeMutation();
 
   const duplicateHandler = async (value: string) => {
     try {
@@ -38,7 +37,7 @@ export const DuplicateThreeNodeDialog = (
       fieldDescription="Enter a name for the duplicate"
       placeholder="Copy"
       initialValue={node?.name}
-      schema={ThreeNodeNameSchema}
+      schema={TreeNodeNameSchema}
       isOpen={isOpen}
       isActionPending={isNodeDuplicating}
       isDataLoading={isNodeLoading}

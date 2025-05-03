@@ -1,8 +1,8 @@
 import type { OneFieldFormDialogProps } from "@/components/ui/one-field-form-dialog";
-import type { CreateThreeNodeDialogType } from "./create-three-node-dialog";
+import type { CreateTreeNodeDialogType } from "./create-tree-node-dialog";
 
-export const CREATE_THREE_NODE_DIALOG_COPY_MAP: Record<
-  CreateThreeNodeDialogType,
+export const CREATE_TREE_NODE_DIALOG_COPY_MAP: Record<
+  CreateTreeNodeDialogType,
   Pick<
     OneFieldFormDialogProps,
     "title" | "description" | "label" | "fieldDescription" | "placeholder"

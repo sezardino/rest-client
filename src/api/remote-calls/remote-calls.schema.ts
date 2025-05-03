@@ -7,13 +7,6 @@ const HeaderParamSchema = z.object({
   enabled: z.boolean(),
 });
 
-const FormDataItemSchema = z.object({
-  key: z.string(),
-  value: z.string().nullable(),
-  file: z.instanceof(File).nullable(),
-  enabled: z.boolean(),
-});
-
 const AuthConfigSchema = z.union([
   z.object({
     type: z.literal("basic"),
