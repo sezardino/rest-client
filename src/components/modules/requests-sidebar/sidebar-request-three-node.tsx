@@ -6,7 +6,7 @@ import type { ComponentProps } from "react";
 import { RequestMethod } from "../shared/request-method";
 import type { RequestItem } from "./requests-sidebar.types";
 
-export type SidebarRequestThreeNodeProps = ComponentProps<"li"> &
+export type SidebarRequestThreeNodeProps = ComponentProps<"div"> &
   Pick<RequestItem, "method" | "name"> & {
     onDeleteNodeClick: () => void;
     onDuplicateNodeClick: () => void;
@@ -25,7 +25,7 @@ export const SidebarRequestThreeNode = (
   } = props;
 
   return (
-    <li
+    <div
       {...rest}
       className={cn(
         "flex items-center px-3 py-1 hover:bg-muted/50 cursor-pointer group",
@@ -66,6 +66,6 @@ export const SidebarRequestThreeNode = (
           </span>
         </Button>
       </Dropdown>
-    </li>
+    </div>
   );
 };
